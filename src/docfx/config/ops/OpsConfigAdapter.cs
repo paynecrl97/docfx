@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
                 if (!allDocsets.ContainsKey(repository))
                 {
                     var repositoryUri = new Uri(repository);
-                    var uriSchemePrefix = Uri.UriSchemeHttp + Uri.SchemeDelimiter;
+                    var uriSchemePrefix = Uri.UriSchemeHttps + Uri.SchemeDelimiter;
                     repository = new Uri(new Uri(new Uri(uriSchemePrefix + repositoryUri.Host), "DefaultCollection") + repositoryUri.AbsolutePath).AbsoluteUri;
                 }
             }
