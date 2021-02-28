@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
 
             if (!allDocsets.ContainsKey(repository))
             {
-                throw new InvalidOperationException($"Docet info not found for {repository}");
+                throw new InvalidOperationException($"Docet info not found for {repository}. It seems the repository URL is not correct. Can you double confirm that the repository URL you specified in Azure Pipeline variable? If this is an Azure DevOps repo, please use this format: 'https://{{organization}}.visualstudio.com/{{project}}/_git/{{repository}}'. More information can be found in 'How to trigger build.docx'");
             }
 
             var docsets = allDocsets[repository];
