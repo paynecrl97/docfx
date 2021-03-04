@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(Config.OutputFolder) ? baseDirectory : Config.OutputFolder, Config.Destination ?? string.Empty));
 
-            BuildDocument(baseDirectory, outputFolder);
+            BuildDocument(Config.PluginTempFolder, baseDirectory, outputFolder);
 
             _templateManager.ProcessTheme(outputFolder, true);
             // TODO: SEARCH DATA
@@ -288,6 +288,10 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.IntermediateFolder = options.IntermediateFolder;
             }
+            if (options.PluginTempFolder != null)
+            {
+                config.PluginTempFolder = options.PluginTempFolder;
+            }
             if (options.ChangesFile != null)
             {
                 config.ChangesFile = options.ChangesFile;
@@ -451,12 +455,15 @@ namespace Microsoft.DocAsCode.SubCommands
 
         #region Build document
 
-        private void BuildDocument(string baseDirectory, string outputDirectory)
+        private void BuildDocument(string pluginTempDirectory, string baseDirectory, string outputDirectory)
         {
-            var pluginBaseFolder = AppDomain.CurrentDomain.BaseDirectory;
+            var applicationBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var defaultPluginFolderPath = Path.Combine(applicationBaseDirectory, "plugins");
+
+            pluginTempDirectory ??= Path.Combine(Path.GetTempPath(), "docfx");
             var pluginFolderName = "plugins_" + Path.GetRandomFileName();
-            var pluginFilePath = Path.Combine(pluginBaseFolder, pluginFolderName);
-            var defaultPluginFolderPath = Path.Combine(pluginBaseFolder, "plugins");
+            var pluginFilePath = Path.Combine(pluginTempDirectory, pluginFolderName);
+
             if (Directory.Exists(pluginFilePath))
             {
                 throw new PluginDirectoryAlreadyExistsException(pluginFilePath);
@@ -468,13 +475,13 @@ namespace Microsoft.DocAsCode.SubCommands
                 created = _templateManager.TryExportTemplateFiles(pluginFilePath, @"^(?:plugins|md\.styles)/.*");
                 if (created)
                 {
-                    BuildDocumentWithPlugin(Config, _templateManager, baseDirectory, outputDirectory, pluginBaseFolder, Path.Combine(pluginFilePath, "plugins"), pluginFilePath);
+                    BuildDocumentWithPlugin(Config, _templateManager, baseDirectory, outputDirectory, applicationBaseDirectory, Path.Combine(pluginFilePath, "plugins"), pluginFilePath);
                 }
                 else
                 {
                     if (Directory.Exists(defaultPluginFolderPath))
                     {
-                        BuildDocumentWithPlugin(Config, _templateManager, baseDirectory, outputDirectory, pluginBaseFolder, defaultPluginFolderPath, null);
+                        BuildDocumentWithPlugin(Config, _templateManager, baseDirectory, outputDirectory, applicationBaseDirectory, defaultPluginFolderPath, null);
                     }
                     else
                     {

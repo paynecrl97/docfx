@@ -106,6 +106,9 @@ namespace Microsoft.DocAsCode
         [Option("intermediateFolder", HelpText = "Set folder for intermediate build results.")]
         public string IntermediateFolder { get; set; }
 
+        [Option("pluginTempFolder", HelpText = "Set folder for temporary cache of plugins.")]
+        public string PluginTempFolder { get; set; }
+
         [Option("changesFile", HelpText = "Set changes file.")]
         public string ChangesFile { get; set; }
 

@@ -115,7 +115,7 @@ namespace Microsoft.DocAsCode.SubCommands
             IEnumerable<Assembly> assemblies;
             using (new LoggerPhaseScope("LoadPluginAssemblies", LogLevel.Verbose))
             {
-                assemblies = LoadPluginAssemblies(pluginDirectory);
+                assemblies = LoadPluginAssemblies(pluginDirectory).ToArray();
             }
 
             var postProcessorNames = config.PostProcessors.ToImmutableArray();
@@ -203,7 +203,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
                     try
                     {
-                        assembly = Assembly.Load(assemblyName);
+                        assembly = Assembly.LoadFrom(assemblyFile);
                         Logger.LogVerbose($"Scanning assembly file {assemblyFile}...");
                     }
                     catch (Exception ex) when (ex is BadImageFormatException || ex is FileLoadException || ex is FileNotFoundException)

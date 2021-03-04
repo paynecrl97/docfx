@@ -138,6 +138,9 @@ namespace Microsoft.DocAsCode
         [JsonProperty("intermediateFolder")]
         public string IntermediateFolder { get; set; }
 
+        [JsonProperty("pluginTempFolder")]
+        public string PluginTempFolder { get; set; }
+
         [JsonProperty("changesFile")]
         public string ChangesFile { get; set; }
 
